@@ -1,0 +1,18 @@
+#!/bin/bash
+
+app_path=$web_path/$app_name
+mkdir $app_path/templates
+cd $app_path/templates
+
+start_bootstrap_template_list=("new-age" "creative" "clean-blog" "agency" "freelancer" "scrolling-nav" "grayscale" "sb-admin-2" "landing-page" "shop-item" "shop-homepage" "business-admin" "sb-admin" "portfolio-item" "stylish-portfolio" "simple-sidebar" "modern-business" "4-col-portfolio" "3-col-portfolio" "2-col-portfolio" "1-col-portfolio" "full-width-pics" "thumbnail-gallery" "the-big-picture" "small-business" "round-about" "one-page-wonder" "logo-nav" "heroic-features" "half-slider" "full" "full-slider" "business-frontpage" "blog-post" "blog-home" "bare")
+
+
+bootstrap_made_template_list=("Bell" "Flexor" "Imperial" "Maxim" "MyBiz" "Baker" "Bethany" "ModernaWp" "Sailor" "Valera" "Medico" "Butterfly" "Knight" "Day" "Anyar" "Company" "Bikin" "Multi" "OnePage" "KnightOne" "eNno" "Gp" "MeFamily" "Dewi" "Resi" "Arsha" "Green" "Hidayah" "Lonely" "Squadfree" "Bocor" "Shuffle" "Mamba" "Moderna" "Amoeba")
+ 
+for template in ${start_bootstrap_template_list[@]}; do
+	wget --output-document=$app_path/templates/SB_$template.tar.xz https://github.com/musicsmithnz/bootstrap_templates/raw/master/startbootstrap_templates/startbootstrap-${template}-gh-pages.tar.xz
+	done
+
+for template in ${bootstrap_made_template_list[@]}; do
+	wget --output-document=$app_path/templates/BM_$template.tar.xz https://github.com/musicsmithnz/bootstrap_templates/raw/master/bootstrapmade_templates/${template}.tar.xz
+	done

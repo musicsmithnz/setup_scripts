@@ -1,0 +1,29 @@
+cp $block_path/OpenLayers.js /var/www/linuxabinitio/applications/Hidayah/static/OpenLayers.js
+
+insert_to=/var/www/linuxabinitio/applications/Hidayah/views/main/contact.html
+
+echo '    <script>
+      function init() {
+        map = new OpenLayers.Map("mapdiv");
+        var mapnik = new OpenLayers.Layer.OSM();
+        map.addLayer(mapnik);
+
+        var lonlat = new OpenLayers.LonLat(174.9455,-37.0680).transform(
+            new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+            new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator
+          );
+
+        var zoom = 13;
+
+        var markers = new OpenLayers.Layer.Markers( "Markers" );
+        map.addLayer(markers);
+        markers.addMarker(new OpenLayers.Marker(lonlat));
+
+        map.setCenter(lonlat, zoom);
+      }
+        init();
+    </script>
+' > /var/www/linuxabinitio/applications/Hidayah/static/js/osm_embed.js
+
+echo '<script src="/linuxabinitio/static/js/OpenLayers.js"></script>' $insert_to
+echo '<script src="/linuxabinitio/static/js/osm_embed.js"></script>' $insert_to

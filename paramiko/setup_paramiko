@@ -1,0 +1,5 @@
+
+sudo apt-get update
+sudo apt-get install build-essential libssl-dev libffi-dev python-dev
+sudo pip3 install cryptography
+sudo pip3 install paramiko

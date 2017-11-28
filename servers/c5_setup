@@ -1,0 +1,36 @@
+#!/usr/bin/bash
+
+#GET DROPLET
+
+	workon droplet_manager
+	echo -e 'a\r\n4\r\n63\r\n1\r\nq\r\n' | ./droplet_manager0.05.py
+	#SSH into droplet to install
+	
+#SETUP ENVIRONMENT ON DROPLET
+
+	DROPLET_ROW=4
+	doctl compute ssh $(doctl compute droplet list | cut -f1 | awk "NR == $DROPLET_ROW{ print }") --ssh-key-path ~/.ssh/digitalocean/$(doctl compute droplet list | cut -f2 | awk "NR == $DROPLET_ROW{ print }")
+	wget https://raw.githubusercontent.com/musicsmithnz/concrete5_centos_install/master/main.sh
+	chmod +x main.sh
+	./c5_environment
+
+
+#SETUP CONCRETE5 ON DROPLET
+
+	C5_LOCALE="en_US"
+	C5_SITE_NAME="languagethrougculture.com"
+	C5_ADMIN_EMAIL="musicsmithnz@gmail.com" 
+	C5_STARTING_POINT="elemental_blank" 
+	C5_PASSWORD=input()
+	C5_DB_SERVER="localhost"
+	C5_DB_USERNAME="admin" 
+	C5_DB_PASSWORD=$(cat /home/.pass)
+	C5_DB_NAME="concrete5_data" 
+	cd /var/www/html/concrete/bin 
+	./concrete5 c5:install --db-server=$C5_DB_SERVER --db-username=$C5_DB_USERNAME --db-password=$C5_PASSWORD --db-database=$C5_DB_NAME --site=$C5_SITE_NAME --starting-point=$C5_STARTING_POINT --admin-email=$C5_ADMIN_EMAIL --admin-password=$C5_PASSWORD --default-locale=$C5_LOCALE
+	chown -R apache.apache /var/www/html/ #this is also in the main.sh script above, which is unnecessary, but I am not sure where the install line should go
+
+
+#LINK DOMAIN
+
+	doctl compute domain create records create --record-type A --record-name www --record-data $(doctl compute droplet list | cut -f3 | awk "NR == $DROPLET_ROW { print }") $DOMAIN_NAME

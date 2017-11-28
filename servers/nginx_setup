@@ -1,0 +1,65 @@
+#!/bin/bash
+
+app_name="lucentmonkey"
+app_location="/var"
+
+
+yum -y update
+yum -y install epel-release
+yum -y install nginx
+yum -y install python-pip python-devel nginx gcc
+
+pip install --upgrade pip
+pip install virtualenv
+pip install uwsgi
+
+cp $app_location/$app_name/handlers/wsgihandler.py $app_location/$app_name
+
+#UWSGI INI
+
+echo "
+[uwsgi]
+chdir = /$app_location/$app_name
+module = wsgihandler:application
+
+master = true
+processes = 5
+
+uid=root
+
+socket = /run/uwsgi/$app_name.sock
+chown-socket = root:nginx
+chmod-socket = 660
+vacuum = true
+
+die-on-term = true
+" > $app_location/$app_name/$app_name.ini
+
+#UWSGI SERVICE
+
+echo "
+[Unit]
+Description=uWSGI instance
+
+[Service]
+ExecStartPre=-/usr/bin/bash -c 'mkdir -p /run/uwsgi; chown root:nginx /run/uwsgi'
+ExecStart=/usr/bin/bash -c 'cd /$app_location/$app_name; uwsgi --ini $app_location/$app_name/$app_name.ini'
+
+[Install]
+WantedBy=multi-user.target
+" > /etc/systemd/system/uwsgi.service
+
+#NGINX CONF SETUP
+nginx_block="server { listen 80; server_name lucentmonkey.com; location \/ { include uwsgi_params; uwsgi_pass unix:\/run\/uwsgi\/lucentmonkey.sock; } }"
+
+sed -i "s|\(include \/etc\/nginx\/conf\.d.*$\)|\1$nginx_block|g" /etc/nginx/nginx.conf
+
+systemctl start uwsgi.service
+systemctl enable uwsgi.service
+
+systemctl start nginx.service
+systemctl enable nginx.service
+
+firewall-cmd --permanent --zone=public --add-service=http
+firewall-cmd --permanent --zone=public --add-service=https
+firewall-cmd --reload

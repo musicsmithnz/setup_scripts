@@ -1,0 +1,59 @@
+#!/bin/bash
+
+#UPDATE AND INSTALL ENVIRONMENT
+
+yum -y update
+yum -y install unzip
+yum -y install vim
+
+#DOWNLOAD WEB2PY
+
+web_path=/var
+web2py_path=$web_path/web2py
+
+
+wget --output-document="$web_path/web2py_src.zip" http://www.web2py.com/examples/static/web2py_src.zip
+
+cd $web_path
+unzip web2py_src.zip
+rm web2py_src.zip
+cd web2py
+
+#GENERATE SSL CERTIFICATE
+
+openssl genrsa -out server.key 2048
+echo -e '\n\n\n\n\n\n\n\n\n' | openssl req -new -key server.key -out server.csr
+openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+
+#PREPARE SERVICE
+
+echo "
+[Unit]
+Description=foo
+
+[Service]
+ExecStart=/usr/bin/python $web2py_path/web2py.py -a '' -c $web2py_path/server.crt -k $web2py_path/server.key -i 0.0.0.0 -p 443
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target
+" > /usr/lib/systemd/system/web2py.service
+
+echo "
+routes_in = (
+)
+
+routes_out = [(x, y) for (y, x) in routes_in]
+
+default_application = 'stylish_portfolio'
+default_controller = 'main'
+default_function = 'index'
+" > $web2py_path/routes.py
+
+systemctl start web2py.service;
+systemctl enable web2py.service;
+
+#INFORM THE USER OF THE COMPLETION
+
+IPADD=$(ip addr show eth0 | awk '{ print $2;}' | sed 's/\/.*$//' | grep -v '^[a-z]\|:\|^10\.\|^127\.\|^172\.\|^192\.168')
+echo "you should be able to visit a new web2py server at: https://$IPADD";

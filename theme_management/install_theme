@@ -1,0 +1,127 @@
+#!/bin/bash
+
+app_path=/var/lucentmonkey
+new_controller=main
+
+start_bootstrap_template_list=("new-age" "creative" "clean-blog" "agency" "freelancer" "scrolling-nav" "grayscale" "sb-admin-2" "landing-page" "shop-item" "shop-homepage" "business-admin" "sb-admin" "portfolio-item" "stylish-portfolio" "simple-sidebar" "modern-business" "4-col-portfolio" "3-col-portfolio" "2-col-portfolio" "1-col-portfolio" "full-width-pics" "thumbnail-gallery" "the-big-picture" "small-business" "round-about" "one-page-wonder" "logo-nav" "heroic-features" "half-slider" "full" "full-slider" "business-frontpage" "blog-post" "blog-home" "bare")
+
+bootstrap_made_template_list=("Bell" "Flexor" "Imperial" "Maxim" "MyBiz" "Baker" "Bethany" "ModernaWp" "Sailor" "Valera" "Medico" "Butterfly" "Knight" "Day" "Anyar" "Company" "Bikin" "Multi" "OnePage" "KnightOne" "eNno" "Gp" "MeFamily" "Dewi" "Resi" "Arsha" "Green" "Hidayah" "Lonely" "Squadfree" "Bocor" "Shuffle" "Mamba" "Moderna" "Amoeba")
+
+read -p "choose a name for the app" app_name
+echo ${bootstrap_made_template_list[@]}
+read -p "choose a template for the app" template_name
+ 
+#templates_to_install=(${list_of_templates[10]})
+
+templates_to_install=($template_name)
+
+for template in "${templates_to_install[@]}";do
+	#DOWNLOADING TEMPLATE
+	new_controller=main
+	template_name=BM_${template}
+	template_dir=$app_path/templates
+	template_path=${template_dir}/${template_name}
+	app_name=$(echo $template_name | sed 's/-/_/g')
+	tar -xvf ${template_path}.tar.xz --directory ${template_dir}
+
+        #CREATING A SKELETON TEMPLATE APP BASED ON WELCOME APP
+        cp -r $app_path/applications/welcome $app_path/applications/$app_name
+
+        #CREATING A CONTROLLER PYTHON FUNCTION FOR EVERY VIEW
+        rm $app_path/applications/$app_name/controllers/$new_controller.py
+        touch $app_path/applications/$app_name/controllers/$new_controller.py
+        views=($(ls -d $template_path/*html))
+	resources=($(ls -d $template_path/*)) #any file that is not a view
+        for i in ${views[@]};do
+		view_name=$(echo $i | sed 's/\/.*\///g' | sed 's/\..*$//g';)
+	        echo -e "def $view_name():\n\treturn locals()\n" >> $app_path/applications/$app_name/controllers/$new_controller.py;
+		echo creating python controller for view: $view_name
+        done
+	
+        #COPYING OVER TEMPLATE FILES/CREATING VIEWS
+
+	        #HTML DOCUMENTS
+	        mkdir $app_path/applications/$app_name/views/$new_controller
+	        cp -r $views $app_path/applications/$app_name/views/$new_controller/
+		for view in ${views[@]}; do
+			for res in "${!resources[@]}"; do
+				if [[ $view == ${resources[res]} ]];then
+					echo $view ${resources[res]}
+				fi
+			done
+		done
+
+		for view in ${views[@]}; do 
+			for ind in ${!resources[@]}; do 
+				if [[ ${resources[$ind]} == $view ]]; then 
+					echo "removed html file from resources list: ${resources[$ind]}"
+					unset resources[$ind]; 
+				fi; 
+			done; 
+		done;
+	
+	        views=($(ls -d $template_path/*html))
+	        resources=($(ls -d $template_path/*)) #any file that is not a view
+
+		web2py_special_folders=(js css images fonts)
+		template_special_folders=(js css img fonts)		
+		for ind in ${!web2py_special_folders[@]};do
+			source=${template_path}/${template_special_folders[$ind]}
+			dest=${app_path}/applications/${app_name}/static/${web2py_special_folders[$ind]}
+			echo "${source} COPIED TO ${dest}"
+			cp -r ${source}/* ${dest}	
+                        for i in ${!resources[@]}; do
+			#	echo "resource: ${resources[$i]}"
+			#	echo "special : ${source}"
+	                        if [[ ${resources[$i]} == ${source} ]]; then
+			#               echo "removed resource from resource list": ${resources[$i]};
+                                        unset resources_array[$i];
+					break;
+                                fi;
+                        done;
+		done
+		
+	        #LIBRARIES
+	        cp -r $template_path/vendor $app_path/applications/$app_name/static/
+                for i in ${!resources[@]}; do
+	                if [[ ${resources[$i]} == "vendor" ]]; then
+				echo "removed resource from resource list: ${resources[$i]}";
+        	                unset resources[$i];
+                        fi;
+                done;
+
+        echo "current resource list: ${resources[@]}"
+
+        #REMAINING FILES
+	for i in ${!resources[@]}; do
+		cp -r ${resources[$i]} $app_path/applications/$app_name/static/
+		echo "removed resource from resource list: ${resources[$i]}";
+                unset resources[$i];
+	done
+
+	echo "current resource list: ${resources[@]}"
+
+	views=($(ls $app_path/applications/$app_name/views/$new_controller/*html))
+        
+	#FIXING THE REFERENCES
+        for view in ${views[@]};do
+		sed -i "s|src=\x22js|src=\x22\/$app_name\/static\/js|g" $view; 
+                sed -i "s|href=\x22css|href=\x22\/$app_name\/static\/css|g" $view; 
+                sed -i "s|href=\x22font-awesome|href=\x22\/$app_name\/static\/font-awesome|g" $view; 
+		
+		sed -i "s|href=\x22vendor|href=\x22\/$app_name\/static/vendor|g" $view;
+		sed -i "s|src=\x22vendor|src=\x22\/$app_name\/static/vendor|g" $view;
+		sed -i "s|src=\x22img|src=\x22\/$app_name\/static/images|g" $view; #important for freelancer, agency
+	done
+
+	lattitude="-37.0640"
+	longitude="174.9451"
+
+	all_resources_array=($(find $app_path/applications/$app_name -type f));
+	for res in ${all_resources_array[@]};do
+		sed -i "s|url.\.\.\/img|url(\/$app_name\/static/images|g" $res;
+	done
+	sed -i "/^routes_in/a #\t(\x27/templates/$app_name\x27,\x27/$app_name/$new_controller/index\x27)," $app_path/routes.py 
+	sed -i "s/^#//" $app_path/routes.py;
+
+done

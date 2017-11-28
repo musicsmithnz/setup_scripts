@@ -1,0 +1,14 @@
+#!/bin/bash
+
+webroot=$1 #/var/www/example
+domain_1=$2 #example.com
+domain_2=$3 #www.example.com
+yum -y install epel-release
+yum -y install yum-utils
+yum-config-manager --enable rhui-REGION-rhel-server-extras rhui-REGION-rhel-server-optional
+yum -y install certbot
+
+
+systemctl stop nginx
+certbot certonly --standalone --preferred-challenges http -w $webroot -d $domain_1 -d $domain_2
+systemctl start nginx

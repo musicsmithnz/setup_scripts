@@ -1,0 +1,8 @@
+location=$(which python3)
+sudo apt-get install python-pip python-dev libjpeg-dev libfreetype6 libfreetype6-dev zlib1g-dev
+sudo pip install setuptools
+sudo -H pip --upgrade pip
+sudo -H virtualenv -p /usr/bin/python3 ~/.rainbowstream_virtual_environment
+source ~/.rainbowstream_virtual_environment
+pip install rainbowstream
+

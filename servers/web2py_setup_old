@@ -1,0 +1,59 @@
+#!/bin/bash
+
+#SSH
+#on home/client, setup ssh to connect to droplet
+
+DROPLETNAME="centos-nyc3-001"
+
+echo -e "$HOME/.ssh/digitalocean/$DROPLETNAME\n\n" | ssh-keygen -t rsa -b 2048
+
+#save key, probably somewhere in home directory such as $HOME/.ssh/digitalocean/droplet001
+#can enter no passphrase
+
+IPADD=$(ip addr show eth0 | awk '{ print $2;}' | sed 's/\/.*$//' | grep -v '^[a-z]\|:\|^10\.\|^127\.\|^172\.\|^192\.168')
+
+ssh-copy-id $USER@$IPADDRESS
+sed 's/#PermitRootLogin*/PermitRootLogin without-password/' /etc/ssh/sshd_config
+systemctl restart sshd
+
+#update
+yum update
+
+#software
+yum install -y epel-release
+yum install -y vim git yum-utils python-devel gcc nginx;
+yum-builddep python
+
+curl -O https://www.python.org/ftp/python/3.6.0/Python-3.6.0.tgz
+tar xf Python-3.6.0.tgz
+cd Python-3.6.0.tgz
+./configure
+make
+make install
+pip install uwsgi
+
+#virtualenvwrapper
+mkdir ~/dev
+pip3 install virtualenvwrapper
+echo export PROJECT_HOME=~/dev >> ~/.bashrc;
+echo source /usr/local/bin/virtualenvwrapper.sh >> ~/.bashrc
+echo export VIRTUALENVWRAPPER_PYTHON=$(which python3) >> ~/.bashrc
+. .bashrc
+
+#nginx
+systemctl start firewalld
+systemctl enable firewalld
+systemctl start nginx
+firewall-cmd --permanent --zone=public --add-service=http 
+firewall-cmd --permanent --zone=public --add-service=https
+firewall-cmd --reload
+
+#web2py
+git clone --recursive https://github.com/web2py/web2py.git ~/myapp
+
+#this finds the global ip address for creating the ssl certificate
+
+cd ~/myapp
+echo -e '\n \n \n \n \n $IPADD \n' | openssl req -x509 -new -newkey rsa:4096 -days 3652 -nodes -keyout myapp.key -out myapp.crt
+python myapp/web2py.py -k myapp.key -c myapp.crt -i.0.0.0 -p 8000
+

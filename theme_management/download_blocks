@@ -1,0 +1,8 @@
+app_path=/var/www/linuxabinitio
+
+
+#OPENLAYERS Map Embed
+block_path=$app_path/blocks/openlayers
+mkdir -p $block_path
+wget --output-document="$block_path/OpenLayers.js" "http://www.openlayers.org/api/OpenLayers.js"
+

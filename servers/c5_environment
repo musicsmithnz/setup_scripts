@@ -1,0 +1,76 @@
+#!/usr/bin/bash
+
+yum -yq update
+
+
+#APACHE
+yum -yq install httpd
+systemctl start httpd
+systemctl enable httpd
+
+#MYSQL
+rpm -Uvh http://dev.mysql.com/get/mysql57-community-release-el7-9.noarch.rpm
+yum -yq install mysql-community-server
+systemctl start mysqld
+systemctl enable mysqld
+
+#MYSQL_PASSWORD_PREP
+MYSQL_TEMP_PASSWORD=$(grep 'temporary password' /var/log/mysqld.log | cut -d' ' -f11)
+MYSQL_NEW_ROOT_PASSWORD=$MYSQL_TEMP_PASSWORD$MYSQL_TEMP_PASSWORD
+MYSQL_NEW_ADMIN_PASSWORD=$MYSQL_NEW_ROOT_PASSWORD
+echo $MYSQL_NEW_ROOT_PASSWORD > /home/.pass
+
+#MYSQL_INSTALLATION
+yum -y install expect
+SECURE_MYSQL=$(expect -c "
+set timeout 10
+spawn mysql_secure_installation
+expect \"Enter password for user root: \"
+send \"$MYSQL_TEMP_PASSWORD\r\"
+expect \"New password: \"
+send \"$MYSQL_NEW_ROOT_PASSWORD\r\"
+expect \"Re-enter new password: \"
+send \"$MYSQL_NEW_ROOT_PASSWORD\r\"
+expect \"Change the password for root ? ((Press y|Y for Yes, any other key for No) : \"
+send \"n\r\"
+expect \"Remove anonymous users? (Press y|Y for Yes, any other key for No) : \"
+send \"y\r\"
+expect \"Disallow root login remotely? (Press y|Y for Yes, any other key for No) : \"
+send \"y\r\"
+expect \"Remove test database and access to it? (Press y|Y for Yes, any other key for No) : \"
+send \"y\r\"
+expect \"Reload privilege tables now? (Press y|Y for Yes, any other key for No) : \"
+send \"y\r\"
+expect eof
+")
+
+echo "$SECURE_MYSQL"
+
+#UPDATE
+yum -y install epel-release
+yum -y update
+rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
+yum -y update
+yum -y clean all
+
+#PHP
+yum -y install php70w php70w-mysql php70w-dom php70w-xml php70w-gd php70w-fileinfo php70w-curl php70w-mcrypt php70w-zip php70w-mbstring
+sed -i 's/memory_limit = .*/memory_limit = 128M/g' /etc/php.ini #Set memory limit for PHP
+systemctl restart httpd
+
+#MYSQL_CONFIG
+mysql -u root -p"$MYSQL_NEW_ROOT_PASSWORD" -Bse "CREATE DATABASE concrete5_data; CREATE USER 'admin'@'localhost' IDENTIFIED BY '$MYSQL_NEW_ADMIN_PASSWORD'; GRANT ALL ON concrete5_data.* TO 'admin'@'localhost'; FLUSH PRIVILEGES; exit;"
+
+
+#CONCRETE5_INSTALLATION
+cd /var/www/html
+wget https://core-releases.s3.amazonaws.com/4214/8115/2764/concrete5-8.0.1.zip
+yum -y install unzip
+unzip concrete5-8.0.1.zip
+mv concrete5-8.0.1/* .
+chown -R apache.apache /var/www/html/
+chcon -R -t httpd_sys_content_rw_t /var/www/html/
+
+#FIREWALL
+firewall-cmd --permanent --zone=public --add-service=http 
+firewall-cmd --reload
