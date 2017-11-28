@@ -14,3 +14,6 @@ cp ${script_dir}/app_name.conf /etc/nginx/sites-available/${app_name}.conf
 ln -s /etc/nginx/sites-available/${app_name}/etc/nginx/sites-enabled/${app_name}
 sed -i "s/APP_NAME/${app_name}/" /etc/nginx/sites-available/${app_name}
 sed -i "s/WEB_DIR/${web_dir}/" /etc/nginx/sites-available/${app_name}
+
+systemctl start nginx
+systemctl enable nginx
