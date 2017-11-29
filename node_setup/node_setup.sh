@@ -8,7 +8,7 @@ yum -y update
 yum -y install epel-release
 yum -y install nodejs
 yum -y install npm
-npm install yarn --save
+npm install yarn 
 npm install yarn -g
 yum -y install git
 mkdir -p ${web_dir}/${app_name}
@@ -61,26 +61,26 @@ yarn add gulp-pug --dep
 yarn add gulp-inject --dep
 yarn add wiredep --dep
 yarn add morgan --dep 
-yarn add body-parser --save
-yarn add express --save
-yarn add mongoose --save
-yarn add mongodb --save
+yarn add body-parser 
+yarn add express 
+yarn add mongoose 
+yarn add mongodb 
 
 #For Authentication
-yarn add passport passport-local --save
+yarn add passport passport-local 
 
 #Not sure about
-yarn add autoprefixer --save
+yarn add autoprefixer 
 
 #Optional
-yarn add jquery.easing --save
-yarn add three --save
+yarn add jquery.easing 
+yarn add three 
 
 #Validation
 #Code Quality - Linting
-yarn add jshint --save
-yarn add jscs --save
-yarn add jshint-stylish --save
+yarn add jshint 
+yarn add jscs 
+yarn add jshint-stylish 
 yarn add gulp-jshint --dep
 yarn add gulp-jscs --dep
 yarn add jshint-stylish --dep
@@ -95,23 +95,31 @@ yarn add sinon --dep
 yarn add mocha --dep
 
 #For Minification
-yarn add gulp-sourcemaps --save
-yarn add gulp-ng-annotate --save
-yarn add gulp-concat --save
-yarn add gulp-uglify --save
-yarn add gulp-filter --save
+yarn add gulp-sourcemaps 
+yarn add gulp-ng-annotate 
+yarn add gulp-concat 
+yarn add gulp-uglify 
+yarn add gulp-filter 
 
+yarn add webpack 
+yarn add style-loader 
+yarn add url-loader  
+yarn add css-loader 
+yarn add webpack
+
+yarn add path
+yarn add glob
+yarn add extract-text-webpack-plugin
+yarn add purifycss-webpack
+yarn install bootstrap loader
 #Compiling/Transpiling
 yarn add gulp-babel babel-preset-env babel-core@7 --dep
 
 #YEOMAN NOT WORKING WELL !!
-#yarn add yo -g --save
+#yarn add yo -g 
 
-#yarn add --save express
-#yarn add --save generator-express-passport-auth
-#yarn add --save generator-karma
-#yarn add --save generator-angular
+#yarn add  express
+#yarn add  generator-express-passport-auth
+#yarn add  generator-karma
+#yarn add  generator-angular
 #
-
-
-<!-- bower:css>
