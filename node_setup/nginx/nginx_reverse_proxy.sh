@@ -15,12 +15,12 @@ yum -y install nginx
 
 mkdir /etc/nginx/sites-available /etc/nginx/sites-enabled
 cat ${script_dir}/${script_sub_dir}/nginx.conf > /etc/nginx/nginx.conf
-cat ${script_dir}/${script_sub_dir}/app_name_http.conf > /etc/nginx/sites-available/${app_name}.conf
+cat ${script_dir}/${script_sub_dir}/app_name_http_standalone.conf > /etc/nginx/sites-available/${app_name}.conf
 ln -s /etc/nginx/sites-available/${app_name}.conf /etc/nginx/sites-enabled/${app_name}.conf
-sed -i "s/DOMAIN_1/${domain_1}/" /etc/nginx/sites-available/${app_name}.conf
-sed -i "s/DOMAIN_2/${domain_2}/" /etc/nginx/sites-available/${app_name}.conf
-sed -i "s/APP_NAME/${app_name}/" /etc/nginx/sites-available/${app_name}.conf
-sed -i "s/WEB_DIR/${web_dir_escaped}/" /etc/nginx/sites-available/${app_name}.conf
+sed -i "s/DOMAIN_1/${domain_1}/g" /etc/nginx/sites-available/${app_name}.conf
+sed -i "s/DOMAIN_2/${domain_2}/g" /etc/nginx/sites-available/${app_name}.conf
+sed -i "s/APP_NAME/${app_name}/g" /etc/nginx/sites-available/${app_name}.conf
+sed -i "s/WEB_DIR/${web_dir_escaped}/g" /etc/nginx/sites-available/${app_name}.conf
 
 #CERTBOT AUTOMATIC SSL CERTIFICATE GENERATION
 yum -y update
@@ -32,11 +32,13 @@ systemctl stop nginx
 certbot certonly --standalone --preferred-challenges http -w $web_dir -d $domain_1 -d $domain_2
 
 #ADD SSH CONFIG
+setenforce 0
+cat ${script_dir}/${script_sub_dir}/app_name_http.conf > /etc/nginx/sites-available/${app_name}.conf
 cat ${script_dir}/${script_sub_dir}/app_name_https.conf >> /etc/nginx/sites-available/${app_name}.conf
-sed -i "s/DOMAIN_1/${domain_1}/" /etc/nginx/sites-available/${app_name}.conf
-sed -i "s/DOMAIN_2/${domain_2}/" /etc/nginx/sites-available/${app_name}.conf
-sed -i "s/APP_NAME/${app_name}/" /etc/nginx/sites-available/${app_name}.conf
-sed -i "s/WEB_DIR/${web_dir_escaped}/" /etc/nginx/sites-available/${app_name}.conf
+sed -i "s/DOMAIN_1/${domain_1}/g" /etc/nginx/sites-available/${app_name}.conf
+sed -i "s/DOMAIN_2/${domain_2}/g" /etc/nginx/sites-available/${app_name}.conf
+sed -i "s/APP_NAME/${app_name}/g" /etc/nginx/sites-available/${app_name}.conf
+sed -i "s/WEB_DIR/${web_dir_escaped}/g" /etc/nginx/sites-available/${app_name}.conf
 
 
 
