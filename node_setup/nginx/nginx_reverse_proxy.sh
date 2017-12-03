@@ -33,8 +33,7 @@ certbot certonly --standalone --preferred-challenges http -w $web_dir -d $domain
 
 #ADD SSH CONFIG
 setenforce 0
-cat ${script_dir}/${script_sub_dir}/app_name_http.conf > /etc/nginx/sites-available/${app_name}.conf
-cat ${script_dir}/${script_sub_dir}/app_name_https.conf >> /etc/nginx/sites-available/${app_name}.conf
+cat ${script_dir}/${script_sub_dir}/app_name_https.conf > /etc/nginx/sites-available/${app_name}.conf
 sed -i "s/DOMAIN_1/${domain_1}/g" /etc/nginx/sites-available/${app_name}.conf
 sed -i "s/DOMAIN_2/${domain_2}/g" /etc/nginx/sites-available/${app_name}.conf
 sed -i "s/APP_NAME/${app_name}/g" /etc/nginx/sites-available/${app_name}.conf

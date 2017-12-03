@@ -39,20 +39,21 @@ echo "source ~/.npmrc" >> ~/.bash_profile
 #export MANPATH="$NPM_PACKAGES/share/man:$(manpath)"
 source ~/.bash_profile
 
-#FOR MAKING NPM INIT NON-INTERACTIVE
-yum -y install pip
-pip install --upgrade pip
-pip install pexpect
-
 cd ${web_dir}/${app_name}
 #Interactive
 #AS USER
-yarn init
 git init
 
 #PRODUCTION APP RUNNER
 yum -y install pm2
 sudo pm2 startup systemd
+
+#CODE DEV
+#After each edit the following happens autmatically
+#1 	JSHint, JSCS,
+# 	Babel - Transpile
+#2 Bundle and Minification for each view
+#Source Maps also provided
 
 #Needed Packages
 yarn add gulp browser-sync --dep
@@ -83,16 +84,23 @@ yarn add jscs
 yarn add jshint-stylish 
 yarn add gulp-jshint --dep
 yarn add gulp-jscs --dep
+yarn add gulp-util
+yarn add gulp-if
+yarn add gulp-print --dep
+yarn add gulp-load-plugins --dep
 yarn add jshint-stylish --dep
+yarn yargs --dep
 cp ${script_location} .jshintrc
 
 #Functionality - Testing, Continuous Integration
 yarn add karma -g
 yarn add karma --dep
 karma init
-yarn add mocha --dep
-yarn add sinon --dep
-yarn add mocha --dep
+npm install --dev mocha sinon chai karma-mocha karma-sinon karma-chai
+yarn add karma-phantomjs-launcher phantomjs-prebuilt --dev 
+
+#stylus compilation
+yarn add gulp-autoprefixer gulp-stylus
 
 #For Minification
 yarn add gulp-sourcemaps 
@@ -101,11 +109,13 @@ yarn add gulp-concat
 yarn add gulp-uglify 
 yarn add gulp-filter 
 
+
 yarn add webpack 
 yarn add style-loader 
 yarn add url-loader  
 yarn add css-loader 
 yarn add webpack
+yarn add striploader
 
 yarn add path
 yarn add glob
@@ -113,7 +123,8 @@ yarn add extract-text-webpack-plugin
 yarn add purifycss-webpack
 yarn install bootstrap loader
 #Compiling/Transpiling
-yarn add gulp-babel babel-preset-env babel-core@7 --dep
+yarn add babel-preset-latest --save-dev; echo '{ "presets": ["latest"] }' > .babelrc
+
 
 #YEOMAN NOT WORKING WELL !!
 #yarn add yo -g 
@@ -123,3 +134,9 @@ yarn add gulp-babel babel-preset-env babel-core@7 --dep
 #yarn add  generator-karma
 #yarn add  generator-angular
 #
+yum -y install pip
+pip install pygments
+echo 'cc() {
+        pygmentize $1 | cat -n | sed "s/^[ \t]*//"
+} ' >>  ~/.bashrc # this prints out the file with syntax highlighting'
+source ~/.bashrc

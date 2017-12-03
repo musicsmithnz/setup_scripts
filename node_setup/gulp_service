@@ -1,0 +1,5 @@
+gulp watch_jslib &
+gulp watch_js &
+gulp watch_css &
+gulp watch_csslib &
+gulp watch_html &
