@@ -1,7 +1,10 @@
 #!/bin/bash
 
-read -p "app name:\t\t" app_name
-read -p "email address:\t" email_address
+#read -p "app name:\t\t" app_name
+#read -p "email address:\t" email_address
+
+app_name=lucentmonkey
+email_address=musicsmithnz@gmail.com
 
 script_dir=$(pwd)
 script_sub_dir='node_setup/nginx'
