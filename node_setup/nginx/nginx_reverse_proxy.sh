@@ -24,7 +24,7 @@ yum -y update
 yum -y install epel-release
 yum -y install nginx
 
-mkdir /etc/nginx/sites-available /etc/nginx/sites-available
+mkdir /etc/nginx/sites-available /etc/nginx/sites-enabled
 if [ $online ==  'true' ]; then
   wget -O /etc/nginx/nginx.conf ${nginx_skeleton_conf}
   wget -O /etc/nginx/sites-available/${app_name}.conf ${nginx_http_conf}
