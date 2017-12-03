@@ -3,21 +3,13 @@
 yum -y update
 yum -y install vim
 
-#git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-#echo 'set nocompatible
-#filetype off                  
-#set rtp+=~/.vim/bundle/Vundle.vim
-#call vundle#begin()
-#Plugin "VundleVim/Vundle.vim"
-#call vundle#end()            
-#filetype plugin indent on'
-#vim +PluginInstall +qall
 mkdir -p ~/.vim/autoload ~/.vim/bundle && \
 curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 echo '
 execute pathogen#infect()
 syntax on
 filetype plugin indent on
+set number
 ' >> ~/.vimrc
 
 git clone https://github.com/tpope/vim-sensible.git ~/.vim/bundle/vim-sensible
