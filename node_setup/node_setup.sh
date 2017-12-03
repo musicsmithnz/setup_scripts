@@ -14,13 +14,12 @@ yum -y install epel-release
 #INSTALL NODE
 curl --silent --location https://rpm.nodesource.com/setup_8.x | sudo bash -
 sudo yum -y install nodejs
-sudo n stable
 #INSTALL NPM
-yum -y install npm
-npm install --save latest-version
+npm install npm
 npm install yarn 
 npm install yarn -g
 yum -y install git
+yum -y install wget
 mkdir -p ${web_dir}/${app_name}
 
 #NGINX
