@@ -35,8 +35,13 @@ fi
 #DEVELOPMENT PACKAGES
 yum -y install wget
 ##VIM
-chmod +x ${script_dir}/vim/setup_vim
-${script_dir}/nginx/vim/setup_vim
+if [$online == 'true' ]; then
+  yum -y install vim
+  wget https://raw.githubusercontent.com/musicsmithnz/setup_scripts/master/node_setup/vim/setup_vim.sh -O -
+else
+  chmod +x ${script_dir}/vim/setup_vim
+  ${script_dir}/nginx/vim/setup_vim
+fi
 
 
 adduser $user_name
@@ -60,7 +65,7 @@ cd ${web_dir}/${app_name}
 git init
 
 #PRODUCTION APP RUNNER
-yum -y install pm2
+npm install pm2@latest -g
 sudo pm2 startup systemd
 
 #CODE DEV
