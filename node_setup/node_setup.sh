@@ -135,7 +135,8 @@ yarn add babel-preset-latest --save-dev; echo '{ "presets": ["latest"] }' > .bab
 #yarn add  generator-karma
 #yarn add  generator-angular
 #
-yum -y install pip
+yum -y install python-pip
+pip install --upgrade pip
 pip install pygments
 echo 'cc() {
         pygmentize $1 | cat -n | sed "s/^[ \t]*//"
