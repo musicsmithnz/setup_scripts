@@ -10,7 +10,7 @@ script_dir=$(pwd)
 script_sub_dir='node_setup/nginx'
 
 web_dir='/var/www'
-web_dir_escaped=$(sed 's#/#\\/#g')
+web_dir_escaped=$(echo $web_dir | sed 's#/#\\/#g')
 
 nginx_skeleton_conf='https://raw.githubusercontent.com/musicsmithnz/setup_scripts/master/node_setup/nginx/nginx.conf'
 nginx_http_conf='https://raw.githubusercontent.com/musicsmithnz/setup_scripts/master/node_setup/nginx/app_name_http_standalone.conf'
