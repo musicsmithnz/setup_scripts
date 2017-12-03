@@ -3,7 +3,7 @@
 #read -p "app name:\t\t" app_name
 #read -p "email address:\t" email_address
 
-app_name=lucentmonkey
+app_name=lucentmonkey.com
 email_address=musicsmithnz@gmail.com
 
 script_dir=$(pwd)
