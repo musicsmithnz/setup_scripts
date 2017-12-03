@@ -4,7 +4,7 @@ web_dir=/var/www
 script_dir=$(pwd)
 
 nginx_reverse_proxy_script='https://raw.githubusercontent.com/musicsmithnz/setup_scripts/master/node_setup/nginx/nginx_reverse_proxy.sh'
-
+npm_project_repo='https://bitbucket.org/musicsmithnz01/lucentmonkey.com'
 online='true'
 
 #AS ROOT
@@ -52,8 +52,8 @@ mkdir "${HOME}/.npm-packages"
 touch ~/.npmrc
 chmod +x ~/.npmrc
 echo "NPM_PACKAGES=${HOME}/.npm-packages" >> ~/.npmrc
-echo "PATH=$NPM_PACKAGES/bin:$PATH">> ~/.npmrc
-echo "prefix=$NPM_PACKAGES" >> ~/.npmrc
+echo 'PATH=$NPM_PACKAGES/bin:$PATH'>> ~/.npmrc
+echo 'prefix=$NPM_PACKAGES' >> ~/.npmrc
 echo "source ~/.npmrc" >> ~/.bash_profile
 #unset MANPATH 
 #export MANPATH="$NPM_PACKAGES/share/man:$(manpath)"
@@ -64,10 +64,15 @@ cd ${web_dir}/${app_name}
 #AS USER
 git init
 
-#PRODUCTION APP RUNNER
+#APP RUNNER
+cd /var/www
+git clone ${npm_project_repo}
 npm install pm2@latest -g
+npm install --global babel-cli
+npm install
+pm2 start --interpreter babel-cli server.js
 sudo pm2 startup systemd
-
+npm install -g @angular/cli
 #CODE DEV
 #After each edit the following happens autmatically
 #1 	JSHint, JSCS,
