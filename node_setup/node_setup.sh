@@ -3,20 +3,35 @@ app_name=lucentmonkey.com
 web_dir=/var/www
 script_dir=$(pwd)
 
+nginx_reverse_proxy_script='https://raw.githubusercontent.com/musicsmithnz/setup_scripts/master/node_setup/nginx/nginx_reverse_proxy.sh'
+
+online='true'
+
 #AS ROOT
 yum -y update
 yum -y install epel-release
-yum -y install nodejs
+
+#INSTALL NODE
+curl --silent --location https://rpm.nodesource.com/setup_8.x | sudo bash -
+sudo yum -y install nodejs
 sudo n stable
+#INSTALL NPM
 yum -y install npm
+npm install --save latest-version
 npm install yarn 
 npm install yarn -g
 yum -y install git
 mkdir -p ${web_dir}/${app_name}
 
 #NGINX
-chmod +x ${script_dir}/nginx/nginx_reverse_proxy
-${script_dir}/nginx/nginx_reverse_proxy
+
+if [ $online ==  'true' ]; then
+  wget ${nginx_reverse_proxy_script} -O -
+else 
+  chmod +x ${script_dir}/nginx/nginx_reverse_proxy
+  ${script_dir}/nginx/nginx_reverse_proxy
+fi
+
 
 #DEVELOPMENT PACKAGES
 yum -y install wget
