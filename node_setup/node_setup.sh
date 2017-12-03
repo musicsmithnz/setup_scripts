@@ -7,6 +7,7 @@ script_dir=$(pwd)
 yum -y update
 yum -y install epel-release
 yum -y install nodejs
+sudo n stable
 yum -y install npm
 npm install yarn 
 npm install yarn -g
