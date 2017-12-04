@@ -1,15 +1,3 @@
-# .bashrc
-
-# Source global definitions
-if [ -f /etc/bashrc ]; then
-	. /etc/bashrc
-fi
-source ~/.npmrc
-
-# Uncomment the following line if you don't like systemctl's auto-paging feature:
-# export SYSTEMD_PAGER=
-
-# User specific aliases and functions
 cc() {
 #	https://www.linux.org/threads/ansi-codes-and-colorized-terminals.11706/
 	BLACK='\033[0;30m'
