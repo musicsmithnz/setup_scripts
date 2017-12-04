@@ -39,3 +39,4 @@ cc() {
  	done
 }
 
+alias p="cc"
