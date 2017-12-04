@@ -49,11 +49,13 @@ su $user_name
 
 #AS NEW USER - SETUP NPM FOR GLOBAL NON-ROOT ACCESS
 mkdir "${HOME}/.npm-packages"
+npm config set prefix '~/.npm-global'
 touch ~/.npmrc
 chmod +x ~/.npmrc
-echo "NPM_PACKAGES=${HOME}/.npm-packages" >> ~/.npmrc
-echo 'PATH=$NPM_PACKAGES/bin:$PATH'>> ~/.npmrc
-echo 'prefix=$NPM_PACKAGES' >> ~/.npmrc
+echo "export PATH=~/.npm-global/bin:$PATH" >> ./npmrc
+#echo "NPM_PACKAGES=${HOME}/.npm-packages" >> ~/.npmrc
+#echo 'PATH=$NPM_PACKAGES/bin:$PATH'>> ~/.npmrc
+#echo 'prefix=$NPM_PACKAGES' >> ~/.npmrc
 echo "source ~/.npmrc" >> ~/.bash_profile
 #unset MANPATH 
 #export MANPATH="$NPM_PACKAGES/share/man:$(manpath)"
