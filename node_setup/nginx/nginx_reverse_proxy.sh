@@ -15,6 +15,8 @@ web_dir_escaped=$(echo $web_dir | sed 's#/#\\/#g')
 nginx_skeleton_conf='https://raw.githubusercontent.com/musicsmithnz/setup_scripts/master/node_setup/nginx/nginx.conf'
 nginx_http_conf='https://raw.githubusercontent.com/musicsmithnz/setup_scripts/master/node_setup/nginx/app_name_http_standalone.conf'
 nginx_https_conf='https://raw.githubusercontent.com/musicsmithnz/setup_scripts/master/node_setup/nginx/app_name_https.conf'
+nginx_reverse_proxy='https://raw.githubusercontent.com/musicsmithnz/setup_scripts/master/node_setup/nginx/reverse_proxy.conf'
+nginx_serve_static_files='https://raw.githubusercontent.com/musicsmithnz/setup_scripts/master/node_setup/nginx/serve_static_files.conf'
 online=true
 
 domain_1="${app_name}"
@@ -49,15 +51,18 @@ systemctl stop nginx
 sudo certbot --nginx certonly -w $web_dir/$app_name -d $domain_1 -d $domain_2 --non-interactive --email $email_address --agree-tos
 #ADD NGINX SSH CONFIG
 setenforce 0
+mkdir /etc/nginx/includes
 if [ $online == 'true' ]; then
   wget -O /etc/nginx/sites-available/${app_name}.conf ${nginx_https_conf}
+  wget -O /etc/nginx/includes/reverse_proxy.conf ${nginx_reverse_proxy}
+  wget -O /etc/nginx/includes/serve_static_files.conf ${nginx_serve_static_files}
 else
   cat ${script_dir}/${script_sub_dir}/app_name_https.conf > /etc/nginx/sites-available/${app_name}.conf
 fi
-sed -i "s/DOMAIN_1/${domain_1}/g" /etc/nginx/sites-available/${app_name}.conf
-sed -i "s/DOMAIN_2/${domain_2}/g" /etc/nginx/sites-available/${app_name}.conf
-sed -i "s/APP_NAME/${app_name}/g" /etc/nginx/sites-available/${app_name}.conf
-sed -i "s/WEB_DIR/${web_dir_escaped}/g" /etc/nginx/sites-available/${app_name}.conf
+sed -i "s/DOMAIN_1/${domain_1}/g" /etc/nginx/sites-available/${app_name}.conf /etc/nginx/includes/*
+sed -i "s/DOMAIN_2/${domain_2}/g" /etc/nginx/sites-available/${app_name}.conf /etc/nginx/includes/*
+sed -i "s/APP_NAME/${app_name}/g" /etc/nginx/sites-available/${app_name}.conf /etc/nginx/includes/*
+sed -i "s/WEB_DIR/${web_dir_escaped}/g" /etc/nginx/sites-available/${app_name}.conf /etc/nginx/includes/*
 
 
 
