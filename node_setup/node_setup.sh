@@ -61,6 +61,9 @@ echo "source ~/.npmrc" >> ~/.bash_profile
 #export MANPATH="$NPM_PACKAGES/share/man:$(manpath)"
 source ~/.bash_profile
 
+npm completion >> ~/.bashrc
+source ~/.bashrc
+
 cd ${web_dir}/${app_name}
 #Interactive
 #AS USER
@@ -136,12 +139,9 @@ yarn add gulp-concat
 yarn add gulp-uglify 
 yarn add gulp-filter 
 
-
-yarn add webpack 
 yarn add style-loader 
 yarn add url-loader  
 yarn add css-loader 
-yarn add webpack
 yarn add striploader
 
 yarn add path
@@ -164,7 +164,5 @@ yarn add babel-preset-latest --save-dev; echo '{ "presets": ["latest"] }' > .bab
 yum -y install python-pip
 pip install --upgrade pip
 pip install pygments
-echo 'cc() {
-        pygmentize $1 | cat -n | sed "s/^[ \t]*//"
-} ' >>  ~/.bashrc # this prints out the file with syntax highlighting'
+wget https://raw.githubusercontent.com/musicsmithnz/setup_scripts/master/.bashrc -O - >>  ~/.bashrc # this prints out the file with syntax highlighting'
 source ~/.bashrc
