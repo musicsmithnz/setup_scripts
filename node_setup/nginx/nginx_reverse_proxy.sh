@@ -50,6 +50,7 @@ systemctl stop nginx
 #certbot certonly --standalone --preferred-challenges http -w $web_dir -d $domain_1 -d $domain_2
 sudo certbot --nginx certonly -w $web_dir/$app_name -d $domain_1 -d $domain_2 --non-interactive --email $email_address --agree-tos
 #ADD NGINX SSH CONFIG
+sed -i 's/SELINUX=.*/SELINUX=permissive/' /etc/sysconfig/selinux
 setenforce 0
 mkdir /etc/nginx/includes
 if [ $online == 'true' ]; then
