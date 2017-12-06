@@ -159,5 +159,5 @@ yarn add babel-preset-latest --save-dev; echo '{ "presets": ["latest"] }' > .bab
 yum -y install python-pip
 pip install --upgrade pip
 pip install pygments
-wget https://raw.githubusercontent.com/musicsmithnz/setup_scripts/master/.bashrc -O - >>  ~/.bashrc # this prints out the file with syntax highlighting'
+wget https://raw.githubusercontent.com/musicsmithnz/setup_scripts/master/color_cat -O - >>  ~/.bashrc # this prints out the file with syntax highlighting'
 source ~/.bashrc
