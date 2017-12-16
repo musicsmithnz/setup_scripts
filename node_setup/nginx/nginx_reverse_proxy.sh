@@ -67,5 +67,5 @@ sed -i "s/WEB_DIR/${web_dir_escaped}/g" /etc/nginx/sites-available/${app_name}.c
 
 
 
-systemctl start nginx
+systemctl restart nginx
 systemctl enable nginx
