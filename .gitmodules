@@ -1,0 +1,3 @@
+[submodule "docmd"]
+	path = docmd
+	url = https://github.com/musicsmithnz/docmd
