@@ -1,75 +1,38 @@
-p
-    This is basically just a list of choices that need to be made about a Node development environment that I want to expand on.
-
-
-h4 Tidy Code
-    li 
-        code gulp-load-plugins
-
-h4 Editor
-ul
-	li vim / agnostic
+p 
+	ul nginx gets a flat index.html file with bundle.min.css and bundle.min.js, minified and uglified with sourcemaps
 
 h4 Package Management
 ul
-	li npm - Would use only this except that it seems like there is no wiredep equivalent. Therefore, use bower for anything that you want injected, npm for everything else. Unless minifying and bundling affects this.
-	li Bower
-	li JSPM
-	li volo
-	li Jam
-h4 Easy Config? Development Webservers
-ul
-	li http-server
-	li live-server
-	li express
-	li budo
-	li Webpack dev server
+	li 
+		b yarn
+h4 Dev
+	li vim / agnostic
 	li Browsersync
-h4 Sharing work
-ul
-	li localtunnel
-	li ngrok
-	li Surge
-	li now
-h4 Automation
-ul
-	li Grunt
-	li gulp
-	li npm Scripts
-h4 Transpiling
-ul
-    li Babel
-        code npm install gulp-babel babel-preset-es2015 --save-dev
-	li TypeScript
-	li Elm
-h4 Bundling
-ul
-	li Browserify
-	li Webpack
-	li Rollup
-    li JSPM
-    li gulp-concat
-h4 Minify
-ul
-    li gulp-filter
-    li gulp-CSSO
-    li gulp-Uglify
-    li gulp-ng-annotate, ngAnnotate
-    li gulp-sourcemaps
-    li 
-        code npm install gulp-filter gulp-csso gulp-uglify gulp-ng-annotate
-
-h4 Linting
-ul
 	li JSLint
 	li JSHint
 	li ESLint
 	li JSCS
-ul
-	li
-		code.code npm install gulp-jshint --save-dep
-	li 
-		code.code npm install gulp-jscs --save-dep
+h3 Production
+h4 Automation
+	li gulp (only as much as necessary)
+	li npm Scripts
+	li Babel
+		code npm install gulp-babel babel-preset-es2015 --save-dev
+	li Minification -Webpack
+	li Sourcemaps -Webpack
+	li Bundling - Webpack
+// h4 Minify
+	ul
+		li gulp-filter
+		li gulp-CSSO
+		li gulp-Uglify
+		li gulp-ng-annotate, ngAnnotate
+		li gulp-sourcemaps
+		li 
+			code npm install gulp-filter gulp-csso gulp-uglify gulp-ng-annotate
+
+
+h4 Production Build
 
 h4 Unit Testing
 ul
@@ -98,10 +61,8 @@ h4 Demo App
 
 h4 Project Structure
 
-h4 Production Build
-ul
-	li Minification
-	li Sourcemaps
+
+
 h4 Automate Deployment
 ul
 	li AWS
@@ -112,4 +73,7 @@ ul
 	li Pubstorm
 	li Github
 	li (Green squid guy ? )
-
+	li localtunnel
+	li ngrok
+	li Surge
+	li now
